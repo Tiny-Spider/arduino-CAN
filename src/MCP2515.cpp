@@ -94,6 +94,7 @@ int MCP2515Class::begin(long baudRate, bool stayInConfigurationMode)
     uint8_t cnf[3];
   } CNF_MAPPER[] = {
     {  (long)8E6, (long)1000E3, { 0x00, 0x80, 0x00 } },
+    {  (long)8E6, (long)666666, { 0xC0, 0xB8, 0x01 } },
     {  (long)8E6,  (long)500E3, { 0x00, 0x90, 0x02 } },
     {  (long)8E6,  (long)250E3, { 0x00, 0xb1, 0x05 } },
     {  (long)8E6,  (long)200E3, { 0x00, 0xb4, 0x06 } },
@@ -107,6 +108,7 @@ int MCP2515Class::begin(long baudRate, bool stayInConfigurationMode)
     {  (long)8E6,    (long)5E3, { 0x1f, 0xbf, 0x07 } },
 
     { (long)16E6, (long)1000E3, { 0x00, 0xd0, 0x82 } },
+    { (long)16E6, (long)666666, { 0xC0, 0xF8, 0x81 } },
     { (long)16E6,  (long)500E3, { 0x00, 0xf0, 0x86 } },
     { (long)16E6,  (long)250E3, { 0x41, 0xf1, 0x85 } },
     { (long)16E6,  (long)200E3, { 0x01, 0xfa, 0x87 } },
@@ -493,10 +495,8 @@ bool MCP2515Class::switchToConfigurationMode()
 
 int MCP2515Class::observe()
 {
-  // TODO: These should probably be 0x60, not 0x80.
-  writeRegister(REG_CANCTRL, 0x80);
-  // TODO: The requested mode must be verified by reading the OPMODE[2:0] bits (CANSTAT[7:5])
-  if (readRegister(REG_CANCTRL) != 0x80) {
+  writeRegister(REG_CANCTRL, 0x60);
+  if (readRegister(REG_CANCTRL) != 0x60) {
     return 0;
   }
 
@@ -662,7 +662,7 @@ void MCP2515Class::handleInterrupt()
     return;
   }
 
-  while (parsePacket()) {
+  while (parsePacket() || _rxId != -1) {
     _onReceive(available());
   }
 }
