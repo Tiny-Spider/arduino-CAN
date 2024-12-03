@@ -12,7 +12,13 @@
 
 #define MCP2515_DEFAULT_CLOCK_FREQUENCY 16e6
 
-#if defined(ARDUINO_ARCH_SAMD) && defined(PIN_SPI_MISO) && defined(PIN_SPI_MOSI) && defined(PIN_SPI_SCK) && (PIN_SPI_MISO == 10) && (PIN_SPI_MOSI == 8) && (PIN_SPI_SCK == 9)
+#if defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+#define MCP2515_DEFAULT_CS_PIN    7
+#define MCP2515_DEFAULT_INT_PIN   8
+#elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040_CAN)
+#define MCP2515_DEFAULT_CS_PIN    PIN_CAN_CS
+#define MCP2515_DEFAULT_INT_PIN   PIN_CAN_INTERRUPT
+#elif defined(ARDUINO_ARCH_SAMD) && defined(PIN_SPI_MISO) && defined(PIN_SPI_MOSI) && defined(PIN_SPI_SCK) && (PIN_SPI_MISO == 10) && (PIN_SPI_MOSI == 8) && (PIN_SPI_SCK == 9)
 // Arduino MKR board: MKR CAN shield CS is pin 3, INT is pin 7
 #define MCP2515_DEFAULT_CS_PIN          3
 #define MCP2515_DEFAULT_INT_PIN         7
